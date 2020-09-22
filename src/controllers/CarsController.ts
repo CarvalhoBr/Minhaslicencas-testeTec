@@ -1,7 +1,9 @@
 import {Request, Response} from 'express'
+import db from '../database/connection'
 
-export function getCars(req: Request, res: Response){
-    return res.json({ok: true})
+export async function getCars(req: Request, res: Response){
+    const cars = await db.select('*').from('carros')
+    return res.json(cars);
 } 
 
 export function findCars(req: Request, res: Response){
