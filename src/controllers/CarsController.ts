@@ -1,12 +1,12 @@
 import {Request, response, Response} from 'express'
 import db from '../database/connection'
 
-export async function getCars(req: Request, res: Response){
+export async function read(req: Request, res: Response){
     const cars = await db.select('*').from('carros')
     return res.json(cars);
 } 
 
-export async function findCars(req: Request, res: Response){
+export async function find(req: Request, res: Response){
     let { search } = req.query
 
     console.log(search)
@@ -26,14 +26,14 @@ export async function findCars(req: Request, res: Response){
 
 } 
 
-export async function getCarById(req: Request, res: Response){
+export async function readById(req: Request, res: Response){
     const { id } = req.params
 
     const carro = await db.select().from('carros').where('id', '=', id)
     return res.json(carro)
 } 
 
-export async function addCar(req: Request, res: Response){
+export async function create(req: Request, res: Response){
     
     const carro = req.body
 
@@ -46,13 +46,12 @@ export async function addCar(req: Request, res: Response){
 
 } 
 
-export async function updateAllInfo(req: Request, res: Response){
+export async function update(req: Request, res: Response){
     const carro = req.body
     const { id } = req.params
     
     try {
-
-        const modified = await db('carros').update(carro).where('id', '=', Number(id))
+        const modified = await db('carros').update(carro).where('id', '=', Number(id)).returning('*')
         return res.json(modified)
     } catch (error) {
         console.error({ERRO: error.message})
@@ -60,15 +59,30 @@ export async function updateAllInfo(req: Request, res: Response){
 
 } 
 
-export async function update(req: Request, res: Response){
+export async function edit(req: Request, res: Response){
     const carro = req.body
-    const id = req.params
-
-    const modified = await db('carros').update(carro).where('id', '=', id)
-
-    return response.json(carro)
+    const { id } = req.params
+    
+    try {
+        const modified = await db('carros').update(carro).where('id', '=', Number(id)).returning('*')
+        return res.json(modified)
+    } catch (error) {
+        console.error({ERRO: error.message})
+    }
 } 
 
-export function destroy(req: Request, res: Response){
-    return res.json({ok: true})
+export async function remove(req: Request, res: Response){
+    const { id } = req.params
+
+
+    try {
+        const deleted = await db('carros').delete('*').where('id', '=', Number(id))
+
+        return res.json(deleted)
+    } catch (error) {
+        console.error(error.message)
+
+        return res.status(500).json({ERROR: "Não foi possível processas a solicitação"})
+    }
+
 } 
