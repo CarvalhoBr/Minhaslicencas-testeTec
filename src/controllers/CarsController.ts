@@ -1,4 +1,4 @@
-import {Request, Response} from 'express'
+import {Request, response, Response} from 'express'
 import db from '../database/connection'
 
 export async function getCars(req: Request, res: Response){
@@ -44,20 +44,29 @@ export async function addCar(req: Request, res: Response){
         return res.status(500).json({ERRO: "Ocorreu um erro ao inserir o dado"})
     }
 
-export function getCarById(req: Request, res: Response){
-    return res.json({ok: true})
 } 
 
-export function addCar(req: Request, res: Response){
-    return res.json({ok: true})
+export async function updateAllInfo(req: Request, res: Response){
+    const carro = req.body
+    const { id } = req.params
+    
+    try {
+
+        const modified = await db('carros').update(carro).where('id', '=', Number(id))
+        return res.json(modified)
+    } catch (error) {
+        console.error({ERRO: error.message})
+    }
+
 } 
 
-export function updateAllInfo(req: Request, res: Response){
-    return res.json({ok: true})
-} 
+export async function update(req: Request, res: Response){
+    const carro = req.body
+    const id = req.params
 
-export function update(req: Request, res: Response){
-    return res.json({ok: true})
+    const modified = await db('carros').update(carro).where('id', '=', id)
+
+    return response.json(carro)
 } 
 
 export function destroy(req: Request, res: Response){
