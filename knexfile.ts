@@ -1,5 +1,6 @@
 // Update with your config settings.
 import path from 'path';
+import { Table } from 'knex'
 
 const configuration = {
 
