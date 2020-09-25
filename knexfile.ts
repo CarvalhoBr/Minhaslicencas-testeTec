@@ -8,10 +8,10 @@ const configuration = {
 
     client: 'pg',
     connection: {
-      host: 'localhost',
+      host: 'database',
       user: 'docker',
       password: 'docker',
-      database: 'db',
+      database: 'api',
     },
 
     migrations: {

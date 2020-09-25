@@ -5,7 +5,8 @@
   "repository": "https://github.com/CarvalhoBr/Minhaslicencas-testeTec.git",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node-dev --inspect --respawn --ignore-watch node_modules ./src/index.ts"
+    "dev": "ts-node-dev --inspect --respawn --ignore-watch node_modules ./src/index.ts",
+    "build": "tsc"
   },
   "dependencies": {
     "express": "^4.17.1",

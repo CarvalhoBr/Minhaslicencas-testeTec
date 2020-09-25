@@ -2,7 +2,7 @@ import {Request, response, Response} from 'express'
 import db from '../database/connection'
 import * as yup from 'yup'
 
-export async function read(req: Request, res: Response){
+export function read(req: Request, res: Response){
 
     db('carros')
     .then((carros) => res.json(carros))
@@ -46,7 +46,7 @@ export function readById(req: Request, res: Response){
     const idSchema = yup.number().required()
 
     return idSchema
-    .validate({ id })
+    .validate(id)
     .then(() => {
         db('carros')
         .where('id', '=', id)
@@ -117,7 +117,7 @@ export function update(req: Request, res: Response){
 
 } 
 
-export async function edit(req: Request, res: Response){
+export function edit(req: Request, res: Response){
     const carro = req.body
     const id = Number(req.params.id)
 
@@ -151,7 +151,7 @@ export async function edit(req: Request, res: Response){
     
 } 
 
-export async function remove(req: Request, res: Response){
+export function remove(req: Request, res: Response){
     const id = Number(req.params.id)
 
     const idSchema = yup.number().required()
