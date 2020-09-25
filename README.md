@@ -58,7 +58,7 @@ Requisição:
 	"veiculo": "Palio",
 	"marca": "Fiat",
 	"ano": "2020",
-	"descricao": "Carro em prefeito estado",
+	"descricao": "Carro em perfeito estado",
 	"vendido": false
 }
 ```
