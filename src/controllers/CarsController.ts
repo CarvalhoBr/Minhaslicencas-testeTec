@@ -1,13 +1,12 @@
-import {Request, response, Response} from 'express'
+import {Request, Response} from 'express'
 import db from '../database/connection'
 import * as yup from 'yup'
+import * as carRepository from '../repositories/carsRepository'
 
 export function read(req: Request, res: Response){
-
-    db('carros')
-    .then((carros) => res.json(carros))
+    return carRepository.findAll()
+    .then(data => res.json(data))
     .catch(err => res.status(500).json({ERROR: "Não foi possível processar sua solicitação"}))
-
 } 
 
 export function find(req: Request, res: Response){
@@ -18,24 +17,20 @@ export function find(req: Request, res: Response){
     return searchSchema
     .validate(search)
     .then(() => {
+        
         if(Number(search)){
-            db('carros')
-            .where('ano', '=', Number(search))
-            .then((carros) => {
-                
-                if(carros.length !== 0){
-                    return res.json(carros)
+            carRepository.findCarsByYear(Number(search))
+            .then(data => {
+                if(data.length !== 0){
+                    return res.json(data)
                 }
-
             })
-            .catch(err => res.status(500).json({ ERROR: "Não foi possível processar sua solicitação" }))
+            .catch(err => res.status(500).json({ERROR: "Não foi possível processar sua solicitação"}))
         }
 
-        db('carros')
-        .where('marca', '~*', String(search))
-        .orWhere('veiculo', '~*', String(search))
-        .then((carros) => res.json(carros))
-        .catch(err => res.status(500).json({ ERROR: "Não foi possível processar sua solicitação" }))
+        return carRepository.findCarsByBrandOrModel(search)
+        .then(data => res.json(data))
+        .catch(err => res.status(500).json({ERROR: "Não foi possível processar sua solicitação"}))        
     })
     .catch(err => res.status(400).json({ERROR: "Insira um valor válido na busca"}))    
 } 
@@ -48,8 +43,7 @@ export function readById(req: Request, res: Response){
     return idSchema
     .validate(id)
     .then(() => {
-        db('carros')
-        .where('id', '=', id)
+        return carRepository.findCarById(id)
         .then((selected) => {
             return res.json(selected)
         })
@@ -72,19 +66,18 @@ export function create(req: Request, res: Response){
     
     return carSchema
     .validate(carro, { stripUnknown: false })
-    .then(() =>
-        db("carros")
-            .insert(carro)
-            .returning('id')
-            .then((id) => res.status(201).json({"Carro cadastrado com sucesso": {id}}))
-            .catch((err) =>
-                res.status(500).json({ error: "Ocorreu um erro ao inserir o dado" })
-            )
-    ).catch((error) => res.status(400).json(error));
+    .then(() => {
+        return carRepository.createCar(carro)
+        .then((id) => res.status(201).json({"Carro cadastrado com sucesso": {id}}))
+        .catch((err) =>
+            res.status(500).json({ ERROR: "Ocorreu um erro ao inserir o dado" })
+        )
+    }).catch((error) => res.status(400).json(error));
 
 } 
 
 export function update(req: Request, res: Response){
+    
     const carro = req.body
     const id = Number(req.params.id)
 
@@ -104,12 +97,9 @@ export function update(req: Request, res: Response){
         return carSchema
         .validate(carro)
         .then(() => {
-        db('carros')
-            .update(carro)
-            .where('id', '=', Number(id))
-            .returning('*')
-            .then(modified => res.json(modified))
-            .catch(err => res.status(500).json(err.message))
+            return carRepository.updateCar(id, carro)
+                .then(modified => res.json(modified))
+                .catch(err => res.status(500).json(err.message))
         })
         .catch(err => res.status(400).json({ERROR: err.message}))
     })
@@ -137,12 +127,9 @@ export function edit(req: Request, res: Response){
         return carSchema
         .validate(carro)
         .then(() => {
-        db('carros')
-            .update(carro)
-            .where('id', '=', Number(id))
-            .returning('*')
-            .then(modified => res.json(modified))
-            .catch(err => res.status(500).json(err.message))
+            return carRepository.updateCar(id, carro)
+                .then(modified => res.json(modified))
+                .catch(err => res.status(500).json(err.message))
         })
         .catch(err => res.status(400).json({ERROR: err.message}))
     })
@@ -159,11 +146,9 @@ export function remove(req: Request, res: Response){
     return idSchema
     .validate(id)
     .then(() => {
-        db('carros')
-            .delete('*')
-            .where('id', '=', id)
-        .then(() => res.status(204).end())
-        .catch(err => res.status(500).json({ ERROR: "Não foi possível processar sua solicitação" }))
+        return carRepository.removeCar(id)
+            .then(() => res.status(204).end())
+            .catch(err => res.status(500).json({ ERROR: "Não foi possível processar sua solicitação" }))
     }).catch(err => res.status(400).json({ERROR: "Insira um id válido"}))
 
 } 
