@@ -5,7 +5,7 @@ A especificação completa do teste pode ser encontrada [aqui](https://github.co
 
 <h2>Execução do projeto</h2>
 
-Para visualização não é necessário instalar as dependencias, pode ser executado com:
+Para visualização não é necessário instalar as dependências, pode ser executado com:
 ```bash
 docker-compose up
 ```
