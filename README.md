@@ -1,9 +1,9 @@
-<h1> Teste técnico Minhas licenças (Backend)
+<h1> Teste técnico Minhas licenças (Backend)</h1>
 
-<p>A especificação completa do teste pode ser encontrada [aqui](https://github.com/dev-ykron/teste-fullstack-frontend-backend)</p>
+A especificação completa do teste pode ser encontrada [aqui](https://github.com/dev-ykron/teste-fullstack-frontend-backend)
 
 
-<h2>Execução do projeto
+<h2>Execução do projeto</h2>
 
 Para visualização não é necessário instalar as dependencias, pode ser executado com:
 ```bash
@@ -19,7 +19,7 @@ npm install
 ```
 
 
-<h2> Dependências utilizadas
+<h2> Dependências utilizadas</h2>
 
  - Typescript
  - Express
